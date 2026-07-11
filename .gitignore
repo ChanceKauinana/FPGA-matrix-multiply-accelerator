@@ -1,0 +1,25 @@
+# Vivado generated files
+*.jou
+*.log
+*.str
+*.dmp
+*.pb
+*.wdb
+*.bit
+*.ltx
+*.rpt
+
+# Vivado folders
+.cache/
+.hw/
+.ip_user_files/
+.runs/
+.sim/
+.gen/
+Xil/
+
+# Backup/temp files
+*.backup
+*.bak
+*.tmp
+.DS_Store
