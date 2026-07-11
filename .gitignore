@@ -23,3 +23,5 @@ Xil/
 *.bak
 *.tmp
 .DS_Store
+
+matmul_accelerator/
