@@ -140,6 +140,62 @@ module tb_malmult_2x2_engine;
         end
     endtask
 
+    task automatic run_vector_file();
+        int fd;
+        int scanned;
+        int test_num;
+
+        string line;
+        string vector_file;
+        int ia00, ia01, ia10, ia11;
+        int ib00, ib01, ib10, ib11;
+        int ic00, ic01, ic10, ic11;
+
+        begin 
+            vector_file = "D:/Computer Engineering THINGS/Vivado Projects/FPGA_Matrix_Accelerator/sim/matmul_2x2_vectors.txt";
+
+            fd = $fopen(vector_file, "r");
+
+            if (fd == 0) begin
+                $display("Error: Could not open vector file %s", vector_file);
+                $finish;
+            end
+
+            test_num = 0;
+
+            while ($fgets(line, fd)) begin
+                scanned = $sscanf(line, "%d %d %d %d %d %d %d %d %d %d %d %d",
+                  ia00, ia01, ia10, ia11,
+                  ib00, ib01, ib10, ib11,
+                  ic00, ic01, ic10, ic11);
+                if (scanned == 12) begin
+                    test_num++;
+
+                    load_matrices(
+                        ia00, ia01, ia10, ia11,
+                        ib00, ib01, ib10, ib11
+                    );
+
+                    expected_c00 = ic00;
+                    expected_c01 = ic01;
+                    expected_c10 = ic10;
+                    expected_c11 = ic11;
+
+                    pulse_start();
+
+                    wait(done);
+                    @(posedge clk);
+                    #1;
+
+                    check_matrix();
+                end
+            end
+            $fclose(fd);
+            $display("Finished running Python golden model vectors.");
+            $display("Total vector file tests run: %0d", test_num);
+        end
+    endtask
+
     initial begin
         clk = 1'b0;
         pass_count = 0;
@@ -199,6 +255,9 @@ module tb_malmult_2x2_engine;
         #1;
 
         check_matrix();
+
+        reset_dut();
+        run_vector_file();
 
         $display("Testbench completed. Passed: %0d, Failed: %0d", pass_count, fail_count);
         $finish;
