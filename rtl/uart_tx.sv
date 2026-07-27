@@ -25,7 +25,7 @@ module uart_tx #(
 
     state_t state;
 
-    localparam int CLK_COUNT_WIDTH = $clog2(CLKS_PER_BIT);
+    localparam int CLK_COUNT_WIDTH = $clog2(CLKS_PER_BIT + 1);
 
     logic [CLK_COUNT_WIDTH-1:0] clk_count;
     logic [2:0] bit_index;
@@ -59,7 +59,7 @@ module uart_tx #(
                 end
 
                 START_BIT: begin
-                    tx <= 1'b1;
+                    tx <= 1'b0;
 
                     if (clk_count == CLKS_PER_BIT - 1) begin
                         clk_count <= '0;
