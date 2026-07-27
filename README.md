@@ -328,3 +328,17 @@ LEDs       = selected output/result display
 ```
 
 This would allow the matrix multiply core to be implemented on the Basys 3 without exposing every internal input and output as a separate FPGA pin.
+
+### UART Echo Hardware Test
+
+A UART echo design was implemented on the Basys 3 FPGA to verify PC-to-FPGA and FPGA-to-PC serial communication.
+
+The design receives bytes from a PC terminal over USB-UART and transmits the same bytes back to the terminal.
+
+Status:
+
+```text
+UART TX simulation: Passed
+UART RX simulation: Passed
+UART echo simulation: Passed
+Basys 3 UART echo hardware test: Passed
