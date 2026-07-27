@@ -268,3 +268,63 @@ This project demonstrates:
 - Python golden model verification
 - Randomized test-vector generation
 - FPGA implementation workflow
+
+## Synthesis Results
+
+The 2x2 matrix multiply engine was synthesized in Vivado targeting the Basys 3 Artix-7 FPGA.
+
+Top module:
+
+```text
+malmult_2x2_engine
+```
+
+Target board:
+
+```text
+Basys 3 / Artix-7
+```
+
+### Post-Synthesis Resource Utilization
+
+| Resource | Used |
+|---|---:|
+| LUTs | 546 |
+| Flip-Flops | 71 |
+| BRAM | 0 |
+| URAM | 0 |
+| DSPs | 0 |
+
+### Synthesis Status
+
+The RTL synthesized successfully in Vivado.
+
+This confirms that the 2x2 matrix multiply engine is synthesizable for the target FPGA. The current design uses signed 8-bit matrix inputs and produces signed 32-bit accumulated outputs.
+
+### Implementation Status
+
+Full implementation was not completed for the raw compute-core top module because the design exposes more top-level I/O ports than are available on the Basys 3 FPGA package.
+
+Vivado reported:
+
+```text
+Design contains 196 I/O ports
+Target device has 105 available user I/O
+```
+
+This is expected for the current raw compute-core version because the module exposes all matrix inputs and full 32-bit matrix outputs directly as FPGA pins.
+
+The compute core itself is valid, but a future board-level wrapper is needed to reduce physical I/O usage.
+
+### Future Board Wrapper
+
+A future top-level wrapper could load matrix values sequentially using a smaller physical interface, such as:
+
+```text
+SW[7:0]    = input data value
+SW[15:12]  = matrix element select
+Buttons    = load, start, reset
+LEDs       = selected output/result display
+```
+
+This would allow the matrix multiply core to be implemented on the Basys 3 without exposing every internal input and output as a separate FPGA pin.
